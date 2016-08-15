@@ -1,12 +1,16 @@
 package main
 
 import (
+	"bytes"
+
 	"log"
 	"os"
 	"os/signal"
 	"time"
 
+	"fmt"
 	"golang.org/x/net/websocket"
+	"os/exec"
 )
 
 const (
@@ -51,7 +55,7 @@ func main() {
 		}
 	}()
 
-	sendId(ws)
+	LogIn(ws)
 
 	ticker := time.NewTicker(time.Second * 100)
 	defer ticker.Stop()
@@ -83,7 +87,19 @@ func main() {
 	}
 }
 
-func sendId(ws *websocket.Conn) {
-	command := Command{UPLOAD_ID, "123456", "this is device id"}
+func LogIn(ws *websocket.Conn) {
+	getSerialNumber := "cat /proc/cpuinfo | grep Serial | cut -d ':' -f 2"
+	cmd := exec.Command("/bin/sh", "-c", getSerialNumber)
+	var out bytes.Buffer //缓冲字节
+
+	cmd.Stdout = &out //标准输出
+	err := cmd.Run()  //运行指令 ，做判断
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("%s", out.String()) //输出执行结果
+	serialNumber := out.String()
+
+	command := Command{UPLOAD_ID, serialNumber, "this is device id"}
 	websocket.JSON.Send(ws, command)
 }
