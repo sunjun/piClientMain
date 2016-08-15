@@ -18,6 +18,7 @@ const (
 	UPLOAD_ID
 	ALL_DEVICES
 	HEART_BEAT
+	TAKE_PHOTO
 )
 
 type Command struct {
@@ -45,13 +46,19 @@ func main() {
 		defer ws.Close()
 		defer close(done)
 		for {
-			var message = make([]byte, 512)
-			_, err := ws.Read(message)
+			var command Command
+			// Receive receives a text message serialized T as JSON.
+			err := websocket.JSON.Receive(ws, &command)
 			if err != nil {
-				log.Println("read:", err)
-				return
+				fmt.Println("clientMain:" + err.Error())
+				break
 			}
-			log.Printf("recv: %s", message)
+
+			switch command.CommandCode {
+			case TAKE_PHOTO:
+
+			}
+
 		}
 	}()
 
@@ -88,7 +95,7 @@ func main() {
 }
 
 func LogIn(ws *websocket.Conn) {
-	getSerialNumber := "cat /proc/cpuinfo | grep Serial | cut -d ':' -f 2"
+	getSerialNumber := "cat /proc/cpuinfo | grep Serial | awk ' {print $3}'"
 	cmd := exec.Command("/bin/sh", "-c", getSerialNumber)
 	var out bytes.Buffer //缓冲字节
 
