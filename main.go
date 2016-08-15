@@ -9,8 +9,10 @@ import (
 	"time"
 
 	"fmt"
-	"golang.org/x/net/websocket"
 	"os/exec"
+	"strings"
+
+	"golang.org/x/net/websocket"
 )
 
 const (
@@ -51,7 +53,7 @@ func main() {
 			err := websocket.JSON.Receive(ws, &command)
 			if err != nil {
 				fmt.Println("clientMain:" + err.Error())
-				break
+				return
 			}
 
 			switch command.CommandCode {
@@ -107,6 +109,7 @@ func LogIn(ws *websocket.Conn) {
 	fmt.Printf("%s", out.String()) //输出执行结果
 	serialNumber := out.String()
 
+	serialNumber = strings.Replace(serialNumber, "\n", "", -1)
 	command := Command{UPLOAD_ID, serialNumber, "this is device id"}
 	websocket.JSON.Send(ws, command)
 }
