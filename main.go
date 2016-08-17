@@ -107,7 +107,10 @@ func main() {
 }
 
 func TakePhoto() (photoPath string) {
-	takePhoto := "raspistill -o /home/pi/image.jpg -w 800 -h 600 -t 500"
+	now := time.Now()
+	secs := now.Unix()
+
+	takePhoto := fmt.Sprintf("raspistill -o ./%d.jpg -w 800 -h 600 -t 500", secs)
 	cmd := exec.Command("/bin/sh", "-c", takePhoto)
 	var out bytes.Buffer //缓冲字节
 
@@ -117,7 +120,7 @@ func TakePhoto() (photoPath string) {
 		log.Fatal(err)
 	}
 	fmt.Printf("%s", out.String()) //输出执行结果
-	return "/home/pi/image.jpg"
+	return fmt.Sprintf("%d.jpg", secs)
 }
 
 func LogIn(ws *websocket.Conn) {
