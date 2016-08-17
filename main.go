@@ -37,7 +37,7 @@ var deviceId string
 
 var origin = "http://192.168.1.103/"
 var url = "ws://192.168.1.103:23456/clientMainServer"
-var uploadUrl = "ws://192.168.1.103:23456/upload"
+var uploadUrl = "http://192.168.1.103:23456/upload"
 
 func main() {
 	interrupt := make(chan os.Signal, 1)
@@ -147,21 +147,26 @@ func Upload(url, file string) (err error) {
 	// Add your image file
 	f, err := os.Open(file)
 	if err != nil {
+		fmt.Println(err)
 		return
 	}
 	defer f.Close()
-	fw, err := w.CreateFormFile("image", file)
+	fw, err := w.CreateFormFile("uploadfile", file)
 	if err != nil {
+		fmt.Println(err)
 		return
 	}
 	if _, err = io.Copy(fw, f); err != nil {
+		fmt.Println(err)
 		return
 	}
 	// Add the other fields
 	if fw, err = w.CreateFormField("key"); err != nil {
+		fmt.Println(err)
 		return
 	}
 	if _, err = fw.Write([]byte("KEY")); err != nil {
+		fmt.Println(err)
 		return
 	}
 	// Don't forget to close the multipart writer.
@@ -171,6 +176,7 @@ func Upload(url, file string) (err error) {
 	// Now that you have a form, you can submit it to your handler.
 	req, err := http.NewRequest("POST", url, &b)
 	if err != nil {
+		fmt.Println(err)
 		return
 	}
 	// Don't forget to set the content type, this will contain the boundary.
@@ -180,6 +186,7 @@ func Upload(url, file string) (err error) {
 	client := &http.Client{}
 	res, err := client.Do(req)
 	if err != nil {
+		fmt.Println(err)
 		return
 	}
 
