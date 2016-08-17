@@ -67,9 +67,8 @@ func main() {
 			case TAKE_PHOTO:
 				imagePath := TakePhoto()
 				Upload(uploadUrl, imagePath)
-				//				command := Command{TAKE_PHOTO, deviceId, "take photo over"}
-				//				websocket.JSON.Send(ws, command)
-
+				command := Command{TAKE_PHOTO, deviceId, imagePath}
+				websocket.JSON.Send(ws, command)
 			}
 
 		}
