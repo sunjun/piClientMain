@@ -35,9 +35,15 @@ type Command struct {
 
 var deviceId string
 
-var origin = "http://192.168.1.103/"
-var url = "ws://192.168.1.103:23456/clientMainServer"
-var uploadUrl = "http://192.168.1.103:23456/upload"
+var origin = "http://104.131.156.105/"
+var url = "ws://104.131.156.105:23456/clientMainServer"
+var uploadUrl = "http://104.131.156.105:23456/upload"
+//var origin = "http://139.129.167.13/"
+//var url = "ws://139.129.167.13:23456/clientMainServer"
+//var uploadUrl = "http://139.129.167.13:23456/upload"
+//var origin = "http://192.168.1.103/"
+//var url = "ws://192.168.1.103:23456/clientMainServer"
+//var uploadUrl = "http://192.168.1.103:23456/upload"
 
 func main() {
 	interrupt := make(chan os.Signal, 1)
